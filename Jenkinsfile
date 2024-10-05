@@ -37,6 +37,10 @@ pipeline{
             steps{
                 sh 'docker run -dt -p 8091:8091 --name c001 myimg'
             }
-        }   
+        }
+
+
+
+        
     }
 }  
