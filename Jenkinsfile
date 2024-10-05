@@ -1,46 +1,79 @@
-pipeline{
+pipeline {
     agent any
-    stages{
-        stage('checkout the code from github'){
-            steps{
-                 git url: 'https://github.com/Raju9934/Bankproject2.git'
-                 echo 'github url checkout'
+
+    stages {
+        stage('Checkout Code from GitHub') {
+            steps {
+                git url: 'https://github.com/Raju9934/Bankproject2.git'
+                echo 'Checked out code from GitHub'
             }
         }
-        stage('codecompile with raju'){
-            steps{
-                echo 'starting compiling'
+        
+        stage('Compile Code') {
+            steps {
+                echo 'Starting compilation'
                 sh 'mvn compile'
             }
         }
-        stage('codetesting with raju'){
-            steps{
+        
+        stage('Run Tests') {
+            steps {
+                echo 'Running tests'
                 sh 'mvn test'
             }
         }
-        stage('qa with raju'){
-            steps{
+        
+        stage('Quality Assurance') {
+            steps {
+                echo 'Running Checkstyle'
                 sh 'mvn checkstyle:checkstyle'
             }
         }
-        stage('package with raju'){
-            steps{
+        
+        stage('Package Application') {
+            steps {
+                echo 'Packaging application'
                 sh 'mvn package'
             }
         }
-        stage('run dockerfile'){
-          steps{
-               sh 'docker build -t myimg .'
-           }
-         }
-        stage('port expose'){
-            steps{
+        
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image'
+                sh 'docker build -t myimg .'
+            }
+        }
+        
+        stage('Run Docker Container') {
+            steps {
+                echo 'Running Docker container'
                 sh 'docker run -dt -p 8091:8091 --name c001 myimg'
             }
         }
-
-
-
         
+        stage('Clean and Install Maven') {
+            steps {
+                echo 'Cleaning and installing Maven'
+                sh 'mvn clean install'
+            }
+        }
+        
+        stage('Build Docker Image for Docker Hub') {
+            steps {
+                echo 'Building Docker image for Docker Hub'
+                sh 'docker build -t dock2024/myimg:v1 .'
+            }
+        }
+        
+        stage('Docker Login') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-pwd', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                        sh "echo $PASS | docker login -u $USER --password-stdin"
+                        sh 'docker push dock2024/myimg:v1' // corrected the image name here
+                    }
+                }
+            }
+        }
     }
-}  
+}
