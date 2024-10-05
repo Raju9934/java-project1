@@ -61,7 +61,7 @@ pipeline {
         stage('Build Docker Image for Docker Hub') {
             steps {
                 echo 'Building Docker image for Docker Hub'
-                sh 'docker build -t dock2024/myimg:v1 .'
+                sh 'docker build -t 2024dock/myimg:v1 .'
             }
         }
         
@@ -70,7 +70,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-pwd', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                         sh "echo $PASS | docker login -u $USER --password-stdin"
-                        sh 'docker push dock2024/myimg:v1' // corrected the image name here
+                        sh 'docker push 2024dock/myimg:v1' // corrected the image name here
                     }
                 }
             }
