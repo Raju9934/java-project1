@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout Code from GitHub') {
             steps {
-                git url: 'https://github.com/Raju9934/Bankproject2.git'
+                git url: 'https://github.com/Raju9934/Final-Bank-Project.git'
                 echo 'Checked out code from GitHub'
             }
         }
@@ -61,7 +61,7 @@ pipeline {
         stage('Build Docker Image for Docker Hub') {
             steps {
                 echo 'Building Docker image for Docker Hub'
-                sh 'docker build -t 2024dock/myimg:v1 .'
+                sh 'docker build -t 2024dock/myimg:v2 .'
             }
         }
         
@@ -70,7 +70,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-pwd', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                         sh "echo $PASS | docker login -u $USER --password-stdin"
-                        sh 'docker push 2024dock/myimg:v1' // corrected the image name here
+                        sh 'docker push 2024dock/myimg:v2' // corrected the image name here
                     }
                 }
             }
